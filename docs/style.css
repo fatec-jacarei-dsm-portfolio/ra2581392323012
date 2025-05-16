@@ -327,20 +327,20 @@ section {
   padding: 4rem 2rem;
   background-color: #020c3a;
   color: white;
-  text-align: center; /* Centraliza o conteúdo dentro da seção */
+  text-align: center;
 }
 
 h2 {
   font-size: 2.5rem;
   color: white;
-  margin-bottom: 3rem; /* Garante um bom espaçamento entre o título e os cards */
-  text-align: center; /* Centraliza o título */
+  margin-bottom: 3rem;
+  text-align: center;
 }
 
 .project-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* Centraliza os cards */
+  justify-content: center;
   gap: 2rem;
 }
 
@@ -349,9 +349,11 @@ h2 {
   background: #fff;
   width: 300px;
   height: 350px;
-  overflow: hidden; /* Esconde a parte da imagem que não cabe */
+  overflow: hidden;
   transition: transform 0.3s ease;
-  border: none; /* Remove o border-radius */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .project-card:hover {
@@ -361,9 +363,11 @@ h2 {
 
 .card-image {
   width: 100%;
-  height: 50%;
-  overflow: hidden; /* Limita a visualização da imagem */
-  position: relative;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
 }
 
 .card-image img {
@@ -371,36 +375,42 @@ h2 {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  display: block;
 }
 
 .project-card:hover .card-image img {
-  transform: scale(1.1); /* Aumenta a imagem ao passar o mouse */
+  transform: scale(1.1);
 }
 
 .card-content {
   position: absolute;
-  bottom: 0;
+  top: 0;
+  left: 0;
   width: 100%;
-  background-color: #fff;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo branco translúcido */
   padding: 1rem;
   text-align: center;
   transform: translateY(100%);
   transition: transform 0.3s ease;
+  z-index: 1;
+  color: #000; /* Texto preto */
+  overflow-y: auto;
 }
 
 .project-card:hover .card-content {
-  transform: translateY(0); /* Move a descrição para cima */
+  transform: translateY(0);
 }
 
 .card-content h3 {
   font-size: 1.3rem;
-  color: #333;
+  color: #000;
   margin-bottom: 1rem;
 }
 
-.card-content .description {
+.card-content p {
   font-size: 1rem;
-  color: #666;
+  color: #000;
   margin-bottom: 0.5rem;
 }
 
@@ -421,10 +431,11 @@ h2 {
     font-size: 1.2rem;
   }
 
-  .card-content .description {
+  .card-content p {
     font-size: 0.9rem;
   }
 }
+
 
 
 
