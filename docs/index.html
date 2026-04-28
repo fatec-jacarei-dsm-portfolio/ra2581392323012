@@ -1,221 +1,917 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fillipe.dev - Portfólio</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Fillipe.dev — Portfólio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+    ============================================================ */
+    :root {
+      --bg:        #07080f;
+      --bg2:       #0d0f1c;
+      --surface:   #12152a;
+      --border:    rgba(255,255,255,0.07);
+      --accent:    #4f6ef7;
+      --accent2:   #a78bfa;
+      --text:      #e8eaf6;
+      --muted:     #7b82a8;
+      --white:     #ffffff;
+      --radius:    16px;
+      --transition: 0.35s cubic-bezier(.4,0,.2,1);
+    }
 
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+
+    a { color: inherit; text-decoration: none; }
+
+    img { display: block; max-width: 100%; }
+
+    section {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 100px 24px 60px;
+    }
+
+    /* ============================================================
+       NOISE OVERLAY
+    ============================================================ */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    .navbar {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      padding: 0 2rem;
+      transition: background var(--transition), backdrop-filter var(--transition), box-shadow var(--transition);
+    }
+
+    .navbar.scrolled {
+      background: rgba(7,8,15,0.7);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .navbar .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.45rem 1rem;
+      border-radius: 100px;
+      transition: color var(--transition), background var(--transition);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--white);
+      background: var(--surface);
+    }
+
+    /* ============================================================
+       HOME
+    ============================================================ */
+    #home {
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(79,110,247,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 70%, rgba(167,139,250,0.08) 0%, transparent 60%),
+        var(--bg);
+      padding-top: 72px;
+      min-height: 100vh;
+    }
+
+    .home-content {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      max-width: 1100px;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .home-text { flex: 1; min-width: 300px; }
+
+    .home-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .home-badge span { color: var(--accent2); }
+
+    .home-text h1 {
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -2px;
+      margin-bottom: 1.2rem;
+      color: var(--white);
+    }
+
+    .home-text h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .home-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 520px;
+      margin-bottom: 2rem;
+    }
+
+    .dados-pessoais {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 2.5rem;
+    }
+
+    .dados-pessoais li {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .dados-pessoais li strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .social-email {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all var(--transition);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .social-btn:hover {
+      border-color: var(--accent);
+      color: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(79,110,247,0.2);
+    }
+
+    .social-btn i { font-size: 1rem; }
+
+    .home-img {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 280px;
+      height: 280px;
+    }
+
+    .avatar-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      opacity: 0.6;
+      filter: blur(10px);
+      animation: pulse-ring 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.04); }
+    }
+
+    .avatar-wrapper img {
+      position: relative;
+      z-index: 1;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--surface);
+    }
+
+    /* ============================================================
+       SKILLS
+    ============================================================ */
+    #habilidades {
+      background:
+        radial-gradient(ellipse 50% 60% at 10% 50%, rgba(167,139,250,0.06) 0%, transparent 60%),
+        var(--bg2);
+      flex-direction: column;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--white);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+      cursor: default;
+    }
+
+    .skill-card:hover {
+      border-color: rgba(79,110,247,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(79,110,247,0.1);
+    }
+
+    .skill-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .skill-card h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       PROJETOS — CARROSSEL
+    ============================================================ */
+    #projetos {
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 30%, rgba(79,110,247,0.08) 0%, transparent 60%),
+        var(--bg);
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .carousel-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      position: relative;
+    }
+
+    .carousel-viewport {
+      overflow: hidden;
+      border-radius: var(--radius);
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+      will-change: transform;
+    }
+
+    .project-slide {
+      min-width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding: 4px;
+    }
+
+    @media (max-width: 700px) {
+      .project-slide { grid-template-columns: 1fr; }
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+      position: relative;
+    }
+
+    .project-card:hover {
+      border-color: rgba(79,110,247,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .project-img-wrap {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .project-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .project-card:hover .project-img-wrap img { transform: scale(1.06); }
+
+    .project-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(18,21,42,0.95) 100%);
+    }
+
+    .project-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 100px;
+      background: rgba(79,110,247,0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(79,110,247,0.2);
+    }
+
+    .project-body h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.3;
+    }
+
+    .project-body p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .project-contrib {
+      font-size: 0.78rem !important;
+      color: rgba(167,139,250,0.7) !important;
+      font-style: italic;
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: auto;
+      padding-top: 8px;
+      transition: color var(--transition), gap var(--transition);
+    }
+
+    .project-link:hover { color: var(--accent2); gap: 10px; }
+
+    /* Carousel Controls */
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .carousel-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    .carousel-btn:hover {
+      border-color: var(--accent);
+      color: var(--white);
+      background: rgba(79,110,247,0.15);
+    }
+
+    .carousel-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 100px;
+      background: var(--border);
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .dot.active {
+      background: var(--accent);
+      width: 24px;
+    }
+
+    .carousel-counter {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      transition: color var(--transition);
+    }
+
+    footer a:hover { color: var(--accent2); }
+
+    /* ============================================================
+       SCROLL ANIMATIONS
+    ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 768px) {
+      .home-content { flex-direction: column-reverse; text-align: center; }
+      .home-text h1 { letter-spacing: -1px; }
+      .home-subtitle { margin: 0 auto 2rem; }
+      .dados-pessoais { align-items: center; }
+      .social-email { justify-content: center; }
+      .skills-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+    }
+  </style>
+</head>
 <body>
-  <nav class="navbar">
+
+  <!-- ============================================================
+       NAVBAR
+  ============================================================ -->
+  <nav class="navbar" id="navbar">
     <div class="container">
-      <h1 class="logo">Fillipe.dev</h1>
+      <h1 class="logo">fillipe.dev</h1>
       <ul class="nav-links">
-        <li><a href="#home">Inicio</a></li>
-        <li><a href="#habilidades">Habilidades</a></li>
-        <li><a href="#projetos">Projetos</a></li>
+        <li><a href="#home" data-section="home">Início</a></li>
+        <li><a href="#habilidades" data-section="habilidades">Habilidades</a></li>
+        <li><a href="#projetos" data-section="projetos">Projetos</a></li>
       </ul>
     </div>
   </nav>
 
-    <!-- Home -->
-    <section id="home" class="home-bg">
-      <div class="home-content">
-        <div class="home-text">
-          <h1>Fillipe Pereira.</h1>
-          <p>Desenvolvedor de software.</p>
-          <div class="info">
-            <div class="descricao">
-              <p>Sou estudante de Desenvolvimento de Software Multiplataforma na FATEC, apaixonado por tecnologia e sempre em busca de novos desafios. Tenho grande interesse por desenvolvimento back-end e atualmente trabalho com Processamento de Linguagem Natural (PLN), área pela qual sou especialmente fascinado. Acredito no poder da programação para transformar ideias em soluções e estou constantemente aprimorando minhas habilidades para construir sistemas eficientes, inteligentes e escaláveis.</p>
-            </div>
-            <ul class="dados-pessoais">
-              <li><strong>Nome:</strong> Fillipe Pereira Bueno de Almeida</li>
-              <li><strong>Email:</strong> fillipepereira8@email.com</li>
-              <li><strong>Data de Nascimento:</strong> 04/05/2005</li>
-            </ul>
-          </div>
-          <div class="social-email">
-            <a href="https://github.com/FPbueno" target="_blank" aria-label="GitHub"><i
-                class="fab fa-github fa-2x"></i></a>
-            <a href="https://www.linkedin.com/in/fillipe-almeida-46017025b/" target="_blank" aria-label="LinkedIn"><i
-                class="fab fa-linkedin fa-2x"></i></a>
-            <div class="email-container">
-              <i class="fas fa-envelope"></i>
-              <span>fillipepereira8@gmail.com</span>
-            </div>
-          </div>
-        </div>
-        <div class="home-img">
-          <img src="img/perfil.png" alt="Foto de perfil">
+  <!-- ============================================================
+       HOME
+  ============================================================ -->
+  <section id="home">
+    <div class="home-content">
+      <div class="home-text reveal">
+        <div class="home-badge"><span>●</span> Disponível para oportunidades</div>
+        <h1>Fillipe<br><em>Pereira.</em></h1>
+        <p class="home-subtitle">Desenvolvedor de software apaixonado por back-end e Processamento de Linguagem Natural. Estudante de DSM na FATEC Jacareí.</p>
+        <ul class="dados-pessoais">
+          <li><strong>Nome:</strong> Fillipe Pereira Bueno de Almeida</li>
+          <li><strong>Nascimento:</strong> 04/05/2005</li>
+          <li><strong>Email:</strong> fillipepereira8@gmail.com</li>
+        </ul>
+        <div class="social-email">
+          <a class="social-btn" href="https://github.com/FPbueno" target="_blank" rel="noopener">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+          <a class="social-btn" href="https://www.linkedin.com/in/fillipe-almeida-46017025b/" target="_blank" rel="noopener">
+            <i class="fab fa-linkedin"></i> LinkedIn
+          </a>
+          <a class="social-btn" href="mailto:fillipepereira8@gmail.com">
+            <i class="fas fa-envelope"></i> E-mail
+          </a>
         </div>
       </div>
-    </section>
-
-    <!-- Sobre -->
-    <section id="habilidades" class="skills-section">
-      <div class="skills-container">
-        <h2>Minhas Habilidades</h2>
-
-
-        <div class="skills-cards">
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/html.PNG" alt="HTML5" class="skill-img" />
-              <h3>HTML5</h3>
-            </div>
-          </div>
-
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/css.PNG" alt="CSS3" class="skill-img" />
-              <h3>CSS3</h3>
-            </div>
-          </div>
-
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/react.PNG" alt="React" class="skill-img" />
-              <h3>React</h3>
-            </div>
-          </div>
-
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/typescript.PNG" alt="TypeScript" class="skill-img" />
-              <h3>TypeScript</h3>
-            </div>
-          </div>
-
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/python.PNG" alt="Python" class="skill-img" />
-              <h3>Python</h3>
-            </div>
-          </div>
-
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/node.PNG" alt="Node.js" class="skill-img" />
-              <h3>Node.js</h3>
-            </div>
-          </div>
-
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/github.PNG" alt="GitHub" class="skill-img" />
-              <h3>GitHub</h3>
-            </div>
-          </div>
-
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/mongo.PNG" alt="MongoDB" class="skill-img" />
-              <h3>MongoDB</h3>
-            </div>
-          </div>
-
-          <div class="skill-card">
-            <div class="skill-content">
-              <img src="img/postgree.PNG" alt="PostgreSQL" class="skill-img" />
-              <h3>PostgreSQL</h3>
-            </div>
-          </div>
+      <div class="home-img reveal">
+        <div class="avatar-wrapper">
+          <div class="avatar-ring"></div>
+          <img src="img/perfil.png" alt="Foto de perfil de Fillipe Pereira">
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Projetos -->
-    <section id="projetos">
-      <div>
-        <h2>Projetos Acadêmicos</h2>
-        <div class="project-list">
-          <div class="project-card hover-card">
-            <a href="https://github.com/API-DSG-1/Projeto-API" class="card-link" target="_blank"
-              rel="noopener noreferrer">
-              <div class="card-content">
+  <!-- ============================================================
+       HABILIDADES
+  ============================================================ -->
+  <section id="habilidades">
+    <div class="section-header reveal">
+      <span class="section-label">Stack</span>
+      <h2>Minhas Habilidades</h2>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-card"><div class="skill-icon"><img src="img/html.PNG" alt="HTML5" class="skill-img" /></div><h3>HTML5</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/css.PNG" alt="CSS3" class="skill-img" /></div><h3>CSS3</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/react.PNG" alt="React" class="skill-img" /></div><h3>React</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/typescript.PNG" alt="TypeScript" class="skill-img" /></div><h3>TypeScript</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/python.PNG" alt="Python" class="skill-img" /></div><h3>Python</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/node.PNG" alt="Node.js" class="skill-img" /></div><h3>Node.js</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/github.PNG" alt="GitHub" class="skill-img" /></div><h3>GitHub</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/mongo.PNG" alt="MongoDB" class="skill-img" /></div><h3>MongoDB</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/postgree.PNG" alt="PostgreSQL" class="skill-img" /></div><h3>PostgreSQL</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/jupyter.png" alt="Jupyter Notebook" class="skill-img" /></div><h3>Jupyter Notebook</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/MachineLearning.jpg" alt="Machine Learning" class="skill-img" /></div><h3>Machine Learning</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/DataMining.jpg" alt="Data Mining" class="skill-img" /></div><h3>Data Mining</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/GDAL.png" alt="GDAL" class="skill-img" /></div><h3>GDAL</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/PLN.png" alt="PLN" class="skill-img" /></div><h3>PLN</h3></div>
+      <div class="skill-card"><div class="skill-icon"><img src="img/PatternRecognition.png" alt="Reconhecimento de Padrões" class="skill-img" /></div><h3>Reconhecimento de Padrões</h3></div>
+  </section>
+
+  <!-- ============================================================
+       PROJETOS — CARROSSEL
+  ============================================================ -->
+  <section id="projetos">
+    <div class="section-header reveal">
+      <span class="section-label">Trabalhos</span>
+      <h2>Projetos Acadêmicos</h2>
+    </div>
+
+    <div class="carousel-wrapper reveal">
+      <div class="carousel-viewport">
+        <div class="carousel-track" id="carouselTrack">
+
+          <!-- Slide 1 -->
+          <div class="project-slide">
+            <div class="project-card">
+              <div class="project-img-wrap">
+                <img src="img/projeto1.jpeg" alt="Plataforma Scrum">
+              </div>
+              <div class="project-body">
+                <div class="project-tags"><span class="tag">Figma</span><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
                 <h3>Plataforma de aprendizagem Scrum</h3>
-                <p>Plataforma de curso simples para o aprendizado do SCRUM. Tecnologias: Figma, HTML, CSS, JS.</p>
-                <p>Contribuição: Prototipação no figma e desenvolvimento em html e css</p>
+                <p>Plataforma de curso simples para o aprendizado do SCRUM.</p>
+                <p class="project-contrib">Contribuição: Prototipação no Figma e desenvolvimento em HTML/CSS</p>
+                <a class="project-link" href="https://github.com/API-DSG-1/Projeto-API" target="_blank" rel="noopener">
+                  Ver no GitHub <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
 
+            <div class="project-card">
+              <div class="project-img-wrap">
+                <img src="img/projeto2.jpeg" alt="Gestão de Mapeamento">
               </div>
-              <div class="card-image">
-                <img src="img/projeto1.jpeg" alt="Imagem do Projeto">
+              <div class="project-body">
+                <div class="project-tags"><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">PostgreSQL</span><span class="tag">PostGIS</span></div>
+                <h3>Plataforma de gestão de projetos de mapeamento</h3>
+                <p>Sistema web para manipulação de projetos de mapeamento para a cliente Visiona.</p>
+                <p class="project-contrib">Contribuição: Prototipação no Figma, desenvolvimento React, banco de dados</p>
+                <a class="project-link" href="https://github.com/DataSolutionsGroup2/API-2" target="_blank" rel="noopener">
+                  Ver no GitHub <i class="fas fa-arrow-right"></i>
+                </a>
               </div>
-            </a>
+            </div>
           </div>
 
+          <!-- Slide 2 -->
+          <div class="project-slide">
+            <div class="project-card">
+              <div class="project-img-wrap">
+                <img src="img/projeto3.jpeg" alt="Monitoramento Nutricional">
+              </div>
+              <div class="project-body">
+                <div class="project-tags"><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">MongoDB</span><span class="tag">MUI</span></div>
+                <h3>Aplicação de monitoramento nutricional</h3>
+                <p>App web para registro e monitoramento da ingestão diária de calorias e nutrientes.</p>
+                <p class="project-contrib">Contribuição: Desenvolvimento do back-end</p>
+                <a class="project-link" href="https://github.com/orgs/Dsg-Abp/repositories" target="_blank" rel="noopener">
+                  Ver no GitHub <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
 
-          <div class="project-card hover-card">
-            <a href="https://github.com/DataSolutionsGroup2/API-2" class="card-link" target="_blank"
-              rel="noopener noreferrer">
-              <div class="card-content">
-                <h3>Plataforma web para gestão de projetos de mapeamento</h3>
-                <p> Sistema web para manipulação de projetos de mapeamento para a cliente Visiona. Tecnologias: Figma,
-                  React, Typescript, PostgreSQL, Postgis, Sequelize</p>
-                <p>Contribuição: Prototipação no Figma, desenvolvimento no React, banco de dados</p>
+            <div class="project-card">
+              <div class="project-img-wrap">
+                <img src="img/projeto4.jpeg" alt="Monitoramento IoT">
               </div>
-              <div class="card-image">
-                <img src="img/projeto2.jpeg" alt="Imagem do Projeto">
+              <div class="project-body">
+                <div class="project-tags"><span class="tag">React Native</span><span class="tag">C++</span><span class="tag">Arduino</span><span class="tag">PostgreSQL</span></div>
+                <h3>App mobile para monitoramento de derivador</h3>
+                <p>Solução IoT para rastreamento de derivadores com interface gráfica em tempo real.</p>
+                <p class="project-contrib">Contribuição: Desenvolvimento do back-end</p>
+                <a class="project-link" href="https://github.com/FPbueno/DSG_4_ABP" target="_blank" rel="noopener">
+                  Ver no GitHub <i class="fas fa-arrow-right"></i>
+                </a>
               </div>
-            </a>
+            </div>
           </div>
 
-          <div class="project-card hover-card">
-            <a href="https://github.com/DataSolutionsGroup2/API-2" class="card-link" target="_blank"
-              rel="noopener noreferrer">
-              <div class="card-content">
-                <h3>Aplicação Web de monitoramento nutricional</h3>
-                <p>Aplicação web que permite aos usuários registrar e monitorar a ingestão diária de calorias e
-                  nutrientes. Tecnologias: Figma, React, Typescript, MongoDB, MUI</p>
-                <p>Contribuição: Desenvolvimento do back-end</p>
+          <!-- Slide 3 -->
+          <div class="project-slide">
+            <div class="project-card">
+              <div class="project-img-wrap">
+                <img src="img/WorcaFlow.jpeg" alt="App de Orçamentos">
               </div>
-              <div class="card-image">
-                <img src="img/projeto3.jpeg" alt="Imagem do Projeto">
+              <div class="project-body">
+                <div class="project-tags"><span class="tag">FastAPI</span><span class="tag">Flutter</span><span class="tag">Supabase</span><span class="tag">ML</span></div>
+                <h3>App mobile de orçamentos</h3>
+                <p>Marketplace de serviços residenciais com Machine Learning para previsão de preços e categorias.</p>
+                <p class="project-contrib">Contribuição: Desenvolvimento do modelo de machine learning</p>
+                <a class="project-link" href="https://github.com/FPbueno/DSG_5" target="_blank" rel="noopener">
+                  Ver no GitHub <i class="fas fa-arrow-right"></i>
+                </a>
               </div>
-            </a>
+            </div>
+
+            <div class="project-card">
+              <div class="project-img-wrap">
+                <img src="img/ChatBot.avif" alt="ChatBot WhatsApp">
+              </div>
+              <div class="project-body">
+                <div class="project-tags"><span class="tag">TypeScript</span><span class="tag">Python</span><span class="tag">WhatsApp</span><span class="tag">PostgreSQL</span></div>
+                <h3>ChatBot com integração ao WhatsApp</h3>
+                <p>Bot para atendimento do Procon de Jacareí/SP com agendamento e métricas.</p>
+                <p class="project-contrib">Contribuição: Desenvolvimento da documentação</p>
+                <a class="project-link" href="https://github.com/Isaac-Souza-Santos/abp_6" target="_blank" rel="noopener">
+                  Ver no GitHub <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
           </div>
 
-          <div class="project-card hover-card">
-            <a href="https://github.com/FPbueno/DSG_4_ABP" class="card-link" target="_blank" rel="noopener noreferrer">
-              <div class="card-content">
-                <h3>Aplicativo mobile para monitoramento de um derivador</h3>
-                <p>Solução própria baseada em IoT, que possibilite o rastreamento dos derivadores e ofereça uma
-                  interface gráfica para visualização em tempo real dos dados transmitidos. Tecnologias: Figma,
-                  ReactNative, Typescript, C++, PostgreSQL, Arduino</p>
-                <p>Contribuição: Desenvolvimento do back-end</p>
+          <!-- Slide 4 -->
+          <div class="project-slide">
+            <div class="project-card">
+              <div class="project-img-wrap">
+                <img src="img/projeto5.jpeg" alt="Projeto IoT">
               </div>
-              <div class="card-image">
-                <img src="img/projeto4.jpeg" alt="Imagem do Projeto">
+              <div class="project-body">
+                <div class="project-tags"><span class="tag">React</span><span class="tag">C++</span><span class="tag">MongoDB</span><span class="tag">Arduino</span></div>
+                <h3>Projeto IoT — Sensores ESP8266</h3>
+                <p>Montagem e programação de sensores DHT11, MQ-7 e GY-ML8511 na placa ESP8266.</p>
+                <p class="project-contrib">Contribuição: Montagem do circuito e rota POST back-end</p>
+                <a class="project-link" href="https://github.com/AnaBarbancho/atividade_IOT" target="_blank" rel="noopener">
+                  Ver no GitHub <i class="fas fa-arrow-right"></i>
+                </a>
               </div>
-            </a>
-          </div>
-
-          <div class="project-card hover-card">
-            <a href="https://github.com/AnaBarbancho/atividade_IOT" class="card-link" target="_blank"
-              rel="noopener noreferrer">
-              <div class="card-content">
-                <h3>Projeto IoT</h3>
-                <p>montagem e programação de sensores na placa ESP8266, utilizando os sensores DHT11, MQ-7 e GY-ML8511.
-                  Tecnologias: React, Typescript, C++, MongoDB, Arduino</p>
-                <p>Contribuição: Montagem do circuito e rota POST back-end</p>
-              </div>
-              <div class="card-image">
-                <img src="img/projeto5.jpeg" alt="Imagem do Projeto">
-              </div>
-            </a>
+            </div>
+            <!-- placeholder card -->
+            <div class="project-card" style="background:transparent;border-style:dashed;opacity:0.3;pointer-events:none;"></div>
           </div>
 
         </div>
       </div>
-    </section>
 
-    <footer>
-      <p>&copy; 2025 - Fillipe Pereira Bueno de Almeida</p>
-    </footer>
-    
+      <div class="carousel-controls">
+        <button class="carousel-btn" id="prevBtn" aria-label="Anterior">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="carousel-dots" id="carouselDots"></div>
+        <button class="carousel-btn" id="nextBtn" aria-label="Próximo">
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <span class="carousel-counter" id="carouselCounter"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <p>© 2025 — Fillipe Pereira Bueno de Almeida &nbsp;·&nbsp;
+      <a href="https://github.com/FPbueno" target="_blank">GitHub</a> &nbsp;·&nbsp;
+      <a href="https://www.linkedin.com/in/fillipe-almeida-46017025b/" target="_blank">LinkedIn</a>
+    </p>
+  </footer>
+
+  <script>
+    /* ============================================================
+       NAVBAR: scroll effect + active link
+    ============================================================ */
+    const navbar = document.getElementById('navbar');
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a[data-section]');
+
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) current = s.id;
+      });
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.dataset.section === current);
+      });
+    }, { passive: true });
+
+    /* ============================================================
+       SCROLL REVEAL
+    ============================================================ */
+    const reveals = document.querySelectorAll('.reveal');
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => ro.observe(el));
+
+    /* ============================================================
+       CARROSSEL
+    ============================================================ */
+    const track    = document.getElementById('carouselTrack');
+    const prevBtn  = document.getElementById('prevBtn');
+    const nextBtn  = document.getElementById('nextBtn');
+    const dotsWrap = document.getElementById('carouselDots');
+    const counter  = document.getElementById('carouselCounter');
+
+    const slides = track.querySelectorAll('.project-slide');
+    let current = 0;
+    const total = slides.length;
+
+    // Build dots
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Slide ${i+1}`);
+      dot.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(dot);
+    });
+
+    function goTo(idx) {
+      current = Math.max(0, Math.min(idx, total - 1));
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dotsWrap.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = `${current + 1} / ${total}`;
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    // Touch/swipe
+    let startX = 0;
+    track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend', e => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) goTo(diff > 0 ? current + 1 : current - 1);
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+      if (e.key === 'ArrowRight') goTo(current + 1);
+    });
+
+    goTo(0); // init
+  </script>
 </body>
-
 </html>
